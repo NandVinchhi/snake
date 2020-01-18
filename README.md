@@ -5,4 +5,3 @@ This is the classic snake game implemented using the Julia programming language.
 
 
 
-
