@@ -1,3 +1,5 @@
+# Simple snake game using Makie.jl, made by Nand Vinchhi for GCI'19
+
 using Makie
 
 score = 0
