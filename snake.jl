@@ -1,5 +1,4 @@
 # Simple snake game using Makie.jl, made by Nand Vinchhi for GCI'19
-
 using Makie
 
 score = 0
@@ -12,7 +11,6 @@ println("|_______/ |_|  \\__| /_/      \\_\\ |_| \\_\\ |_______|")
 println("")
 println("use the arrow keys to move and collect the red fruit. The snake gets faster and faster as the game progresses!")
 scene = Scene(resolution = (400, 400), raw = true, camera = campixel!)
-scene = scatter!([10], [10], color = :green, marker = :rect, markersize = 20)
 display(scene)
 
 k = [[0, 20], [0, 20], [0, 20], [0, 20]]
@@ -40,15 +38,18 @@ fruit_x = 90
 fruit_y = 110
 game_over = false
 speed = 0.3
-while game_over == false
+scene = scatter!([fruit_x], [fruit_y], color = :red, marker = :rect, markersize = 20)
+
+
+function iter()
     
-    scene = scatter!(x, y, color = :white, marker = :rect, markersize = 25)
-    scene = scatter!([fruit_x], [fruit_y], color = :white, marker = :rect, markersize = 25)
+    global scene = scatter!(x, y, color = :white, marker = :rect, markersize = 25)
+    
 
     for i1 = 0:(length(x) - 2)
-        n1 = length(x) - i1
+        global n1 = length(x) - i1
         if k[n1 - 1] == [(x[n1 - 1] - x[n1]), (y[n1 - 1] - y[n1])]
-            k[n1] = k[n1 - 1]
+            global k[n1] = k[n1 - 1]
         end
     end
     
@@ -65,23 +66,30 @@ while game_over == false
     end
 
     for i = 1:length(x)
-        x[i] += k[i][1]
-        y[i] += k[i][2]
+        global x[i] += k[i][1]
+        global y[i] += k[i][2]
     end
 
     if x[1] == fruit_x && y[1] == fruit_y
+        global scene = scatter!([fruit_x], [fruit_y], color = :white, marker = :rect, markersize = 25)
         global fruit_x = rand([10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390])
         global fruit_y = rand([10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390])
+        global scene = scatter!([fruit_x], [fruit_y], color = :red, marker = :rect, markersize = 20)
         push!(x, x[end] - k[end][1])
         push!(y, y[end] - k[end][2])
         push!(k, k[end])
         global speed -= 0.01
         global score += 1
     end
-    scene = scatter!(x, y, color = :green, marker = :rect, markersize = 20)
-    scene = scatter!([fruit_x], [fruit_y], color = :red, marker = :rect, markersize = 20)
+    global scene = scatter!(x, y, color = :green, marker = :rect, markersize = 20)
+    
     sleep(speed)
 
+end
+
+
+while game_over == false
+    iter()
 end
 
 for i = 1:100
